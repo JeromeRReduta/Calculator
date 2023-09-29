@@ -4,6 +4,9 @@ import models.Calculator;
 
 import java.util.List;
 
+/**
+ * An impelmentation for a calculator view that prints to console.
+ */
 public class ConsolePrintCalculatorView implements CalculatorView {
 
     private final Calculator calculator;

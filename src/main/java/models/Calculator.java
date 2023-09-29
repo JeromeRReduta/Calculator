@@ -2,7 +2,6 @@ package models;
 
 import numbers_with_logs.NumberWithLogs;
 
-import java.util.List;
 import java.util.function.BiFunction;
 
 /**

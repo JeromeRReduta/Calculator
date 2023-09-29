@@ -1,5 +1,4 @@
 import numbers_with_logs.NumberWithLogs;
-import operations_with_logs.OperationWithLogs;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 

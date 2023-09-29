@@ -1,29 +1,39 @@
 package controllers;
 
-import input_validation.InputValidator;
 import models.Calculator;
-import models.SimpleCalculator;
 import numbers_with_logs.NumberWithLogs;
-import operations_with_logs.OperationWithLogs;
+import utility.InputValidator;
 import views.CalculatorView;
-import views.ConsolePrintCalculatorView;
 
-import java.util.InputMismatchException;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.function.BiFunction;
 
-public class ConsolePrintCalculatorController implements CalculatorController{
+import static numbers_with_logs.NumberWithLogs.Operation;
 
+/**
+ * An implementation for a calculator that runs five operations: addition, subtraction, multiplication, division, and
+ * exponent (power)
+ */
+public class FiveOpCalculatorController implements CalculatorController {
+
+    /**
+     * Allowed operations
+     */
     private final Map<String, BiFunction<Number, Number, NumberWithLogs>> OPERATIONS =
             Map.of(
-                    "+", OperationWithLogs::addition,
-                    "-", OperationWithLogs::subtraction,
-                    "*", OperationWithLogs::multiplication,
-                    "/", OperationWithLogs::division,
-                    "^", OperationWithLogs::power
+                    "+", Operation::addition,
+                    "-", Operation::subtraction,
+                    "*", Operation::multiplication,
+                    "/", Operation::division,
+                    "^", Operation::power
             );
+
     private final String END_REQUEST = "END";
+
+    /**
+     * The calculator can be in one of 3 states: new (i.e. not set up), set_up, and done
+     */
     enum State {
             NEW,
             SET_UP,
@@ -37,17 +47,7 @@ public class ConsolePrintCalculatorController implements CalculatorController{
 
     private final Scanner scan;
 
-    public static void main(String[] args) {
-        Calculator calculator = new SimpleCalculator();
-        CalculatorView view = new ConsolePrintCalculatorView(calculator);
-        ConsolePrintCalculatorController controller = new ConsolePrintCalculatorController(
-                calculator,
-                view);
-        controller.run();
-    }
-
-
-    public ConsolePrintCalculatorController(Calculator model, CalculatorView view) {
+    public FiveOpCalculatorController(Calculator model, CalculatorView view) {
         this.model = model;
         this.view = view;
         this.state = State.NEW;
@@ -88,6 +88,7 @@ public class ConsolePrintCalculatorController implements CalculatorController{
         String operationString = validator.getValidInput();
         if (operationString.equals(END_REQUEST)) {
             this.state = State.DONE;
+            scan.close();
             return;
         }
         BiFunction<Number, Number, NumberWithLogs> operation = OPERATIONS.get(operationString);
@@ -120,10 +121,10 @@ public class ConsolePrintCalculatorController implements CalculatorController{
         view.tryDisplayResultValue();
     }
 
-    private void end() {
-        this.state = State.DONE;
-    }
-
+    /**
+     * Prompts the user for a number, which is converted into a NumberWithLogs
+     * @return a number with logs, holding the user's inputted number
+     */
     private NumberWithLogs promptForNumber() {
         InputValidator validator = new InputValidator(
                 scan,
@@ -133,6 +134,11 @@ public class ConsolePrintCalculatorController implements CalculatorController{
         return new NumberWithLogs(validNumber);
     }
 
+    /**
+     * Returns whether the input is a double in string form
+     * @param input user input
+     * @return whether the input is a double in string form
+     */
     private boolean canBeParsedAsDouble(String input) {
         try {
             Double.parseDouble(input);
@@ -141,18 +147,5 @@ public class ConsolePrintCalculatorController implements CalculatorController{
         catch (NumberFormatException e) {
             return false;
         }
-    }
-
-    private String promptForOperationOrEnd() {
-        boolean isValid = false;
-        String input = null;
-        while (!isValid) {
-            System.out.println("Enter 'END' to quit or one of the following operations: +, -, *, /, ^");
-            input = scan.nextLine().strip();
-            isValid =
-                    input.equals(END_REQUEST)
-                    || OPERATIONS.containsKey(input);
-        }
-        return input;
     }
 }

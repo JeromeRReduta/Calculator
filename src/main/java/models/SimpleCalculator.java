@@ -4,24 +4,17 @@ import numbers_with_logs.NumberWithLogs;
 
 import java.util.List;
 import java.util.function.BiFunction;
-import operations_with_logs.OperationWithLogs;
 
+import static numbers_with_logs.NumberWithLogs.Operation;
+
+/**
+ * Implementation of a calculator
+ */
 public class SimpleCalculator implements Calculator {
 
-    public static void main(String[] args) {
-        System.out.println("First time using calculator: \n" + new SimpleCalculator());
-        SimpleCalculator thing = new SimpleCalculator();
-        thing.setFirstNumber(new NumberWithLogs(5));
-        thing.setSecondNumber(new NumberWithLogs(10));
-        thing.setOperation(OperationWithLogs::addition);
-        thing.calculate();
-        thing.setSecondNumber(new NumberWithLogs(15));
-        thing.setOperation(OperationWithLogs::division);
-        thing.calculate();
-        System.out.println(thing);
-        System.out.println(thing.getResult());
-    }
-
+    /**
+     * Note that this number is also used to track the result
+     */
     private NumberWithLogs first;
 
     private NumberWithLogs second;
@@ -30,7 +23,7 @@ public class SimpleCalculator implements Calculator {
     public SimpleCalculator() {
         this.first = new NumberWithLogs(0);
         this.second = new NumberWithLogs(0);
-        this.operation = OperationWithLogs::addition;
+        this.operation = Operation::addition;
     }
 
     @Override
@@ -50,7 +43,7 @@ public class SimpleCalculator implements Calculator {
 
     @Override
     public void calculate() {
-        first = OperationWithLogs.runWithLogs(first, second, operation);
+        first = Operation.runWithLogs(first, second, operation);
     }
 
     @Override
